@@ -5,6 +5,7 @@
 	transition: transform 150ms ease, box-shadow 100ms ease;
 	padding: var(--mantine-spacing-xl);
 	padding-left: calc(var(--mantine-spacing-xl) * 2);
+	transform-origin: center;
 }
 
 .card:hover {
@@ -18,10 +19,13 @@
 	top: 0;
 	bottom: 0;
 	left: 0;
-	width: 6px; /* Adjusted to use px instead of rem */
-	background-image: linear-gradient(
-		0deg,
-		var(--mantine-color-pink-6),
-		var(--mantine-color-orange-6)
+	width: 6px;
+	background-image: var(
+		--card-gradient,
+		linear-gradient(
+			0deg,
+			var(--mantine-color-red-6),
+			var(--mantine-color-orange-6)
+		)
 	);
 }

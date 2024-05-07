@@ -1,6 +1,5 @@
 import React from "react";
 import ImageUpload from "./components/ImageUpload";
-// import ImageList from "./components/ImageList";
 import "./styles/styles.css";
 
 function App() {
@@ -8,7 +7,6 @@ function App() {
 		<div className="app">
 			<h1>Image Annotation Application</h1>
 			<ImageUpload />
-			{/* <ImageList /> */}
 		</div>
 	);
 }

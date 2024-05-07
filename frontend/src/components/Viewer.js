@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Card, Image, Select, Text } from "@mantine/core";
-import Card2 from "./tempcard";
+import { Card, Image, Select, Text, Paper } from "@mantine/core";
+import "../styles/cardcss.css";
 
 function ImageAnnotationViewer({ file, annotation, onAnnotationChange }) {
 	const [imageUrl, setImageUrl] = useState("");
+	const [cardGradient, setCardGradient] = useState(
+		"linear-gradient(0deg, var(--mantine-color-red-6), var(--mantine-color-orange-6))"
+	);
 
 	useEffect(() => {
 		if (file) {
@@ -18,16 +21,32 @@ function ImageAnnotationViewer({ file, annotation, onAnnotationChange }) {
 	}, [file]);
 
 	const handleAnnotationChange = value => {
+		if (value) {
+			setCardGradient(
+				"linear-gradient(0deg, var(--mantine-color-green-6), var(--mantine-color-blue-6))"
+			);
+		} else {
+			setCardGradient(
+				"linear-gradient(0deg, var(--mantine-color-red-6), var(--mantine-color-orange-6))"
+			);
+		}
 		if (onAnnotationChange) {
 			onAnnotationChange(value);
 		}
 	};
 
 	return (
-		<Card
-			shadow="sm"
-			padding="lg"
-			style={{ margin: "20px", display: "flex", alignItems: "center" }}
+		<Paper
+			withBorder
+			radius="md"
+			className="card"
+			style={{
+				margin: "20px",
+				display: "flex",
+				flexDirection: "column",
+				alignItems: "center",
+				"--card-gradient": cardGradient
+			}}
 		>
 			<Image
 				src={imageUrl}
@@ -65,7 +84,7 @@ function ImageAnnotationViewer({ file, annotation, onAnnotationChange }) {
 					style={{ width: "200px", marginTop: "10px" }}
 				/>
 			</div>
-		</Card>
+		</Paper>
 	);
 }
 
