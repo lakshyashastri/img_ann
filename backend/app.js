@@ -20,12 +20,31 @@ const upload = multer({ storage: storage });
 
 app.use(express.json());
 
+const validAnnotations = [
+	"airplane",
+	"car",
+	"bird",
+	"cat",
+	"deer",
+	"dog",
+	"frog",
+	"horse",
+	"ship",
+	"trucks"
+];
+
 // image upload
 app.post("/upload", upload.single("image"), async (req, res) => {
-	if (!req.file || !req.body.class_name) {
+	if (!req.file) {
+		return res.status(400).send({ message: "No image uploaded!" });
+	}
+	if (
+		!req.body.class_name ||
+		!validAnnotations.includes(req.body.class_name)
+	) {
 		return res
 			.status(400)
-			.send({ message: "No image uploaded or annotation provided!" });
+			.send({ message: "Invalid or missing annotation!" });
 	}
 
 	try {
@@ -38,7 +57,7 @@ app.post("/upload", upload.single("image"), async (req, res) => {
 		const insertAnnotationText =
 			"INSERT INTO Annotations(image_id, class_name) VALUES($1, $2);";
 
-		// database transaction
+		// Start database transaction
 		await pool.connect(async (err, client, done) => {
 			if (err) throw err;
 

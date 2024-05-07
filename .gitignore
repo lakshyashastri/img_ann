@@ -1,3 +1,4 @@
 img_ann.pdf
 /backend/.env
 /backend/node_modules/
+.DS_Store

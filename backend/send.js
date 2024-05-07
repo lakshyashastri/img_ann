@@ -10,7 +10,7 @@ async function testUpload() {
 	const testImage = fs.createReadStream(path.join(__dirname, "test.png"));
 
 	form.append("image", testImage);
-	form.append("class_name", "TestAnnotation");
+	form.append("class_name", "ship");
 
 	try {
 		const response = await axios.post(URL, form, {
