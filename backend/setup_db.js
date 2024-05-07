@@ -1,39 +1,38 @@
 const { Pool } = require("pg");
 
 const pool = new Pool({
-	connectionString: process.env.DATABASE_URL
+	connectionString: process.env.DATABASE_URL,
+	ssl: false
 });
 
-const createTables = async () => {
-	const createImagesTableQuery = `
-    CREATE TABLE IF NOT EXISTS Images (
-      image_id SERIAL PRIMARY KEY,
-      image_data BYTEA,
-      file_name VARCHAR(255),
-      uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-  `;
+async function setupDatabase() {
+	const createImagesTable = `
+        CREATE TABLE IF NOT EXISTS Images (
+            image_id SERIAL PRIMARY KEY,
+            file_path TEXT NOT NULL,
+            file_name VARCHAR(255) NOT NULL
+        );
+    `;
 
-	const createAnnotationsTableQuery = `
-    CREATE TABLE IF NOT EXISTS Annotations (
-      annotation_id SERIAL PRIMARY KEY,
-      image_id INT,
-      class_name VARCHAR(255),
-      annotated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (image_id) REFERENCES Images(image_id)
-    );
-  `;
+	const createAnnotationsTable = `
+        CREATE TABLE IF NOT EXISTS Annotations (
+            annotation_id SERIAL PRIMARY KEY,
+            image_id INT,
+            class_name VARCHAR(255) NOT NULL,
+            FOREIGN KEY (image_id) REFERENCES Images(image_id)
+        );
+    `;
 
 	try {
-		await pool.query(createImagesTableQuery);
-		console.log("Images table created successfully.");
-		await pool.query(createAnnotationsTableQuery);
-		console.log("Annotations table created successfully.");
-	} catch (err) {
-		console.error("Error creating tables:", err);
-	} finally {
-		pool.end();
+		await pool.query(createImagesTable);
+		await pool.query(createAnnotationsTable);
+		console.log("Database setup completed successfully.");
+	} catch (error) {
+		console.error("Error setting up the database:", error);
 	}
-};
+}
 
-createTables();
+(async () => {
+	await setupDatabase();
+	process.exit(0);
+})();
