@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, Image, Select, Text, Paper } from "@mantine/core";
+import { Card, Image, Select, NativeSelect, Text, Paper } from "@mantine/core";
 import "../styles/cardcss.css";
 
 function ImageAnnotationViewer({ file, annotation, onAnnotationChange }) {
@@ -43,17 +43,23 @@ function ImageAnnotationViewer({ file, annotation, onAnnotationChange }) {
 			style={{
 				margin: "20px",
 				display: "flex",
-				flexDirection: "column",
+				flexDirection: "row",
 				alignItems: "center",
 				"--card-gradient": cardGradient
 			}}
 		>
-			<Image
-				src={imageUrl}
-				fit="contain"
-				style={{ width: "300px", height: "auto", marginRight: "20px" }}
-			/>
-			<div>
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					marginRight: "20px"
+				}}
+			>
+				<Image
+					src={imageUrl}
+					fit="contain"
+					style={{ width: "300px", height: "auto" }}
+				/>
 				<Text
 					style={{
 						backgroundColor: "#f0f0f0",
@@ -65,25 +71,27 @@ function ImageAnnotationViewer({ file, annotation, onAnnotationChange }) {
 				>
 					{file.name}
 				</Text>
-				<Select
-					value={annotation}
-					onChange={handleAnnotationChange}
-					data={[
-						{ value: "airplane", label: "Airplane" },
-						{ value: "car", label: "Car" },
-						{ value: "bird", label: "Bird" },
-						{ value: "cat", label: "Cat" },
-						{ value: "deer", label: "Deer" },
-						{ value: "dog", label: "Dog" },
-						{ value: "frog", label: "Frog" },
-						{ value: "horse", label: "Horse" },
-						{ value: "ship", label: "Ship" },
-						{ value: "truck", label: "Truck" }
-					]}
-					placeholder="Select Annotation"
-					style={{ width: "200px", marginTop: "10px" }}
-				/>
 			</div>
+			<Select
+				value={annotation}
+				onChange={handleAnnotationChange}
+				data={[
+					{ value: "airplane", label: "Airplane" },
+					{ value: "car", label: "Car" },
+					{ value: "bird", label: "Bird" },
+					{ value: "cat", label: "Cat" },
+					{ value: "deer", label: "Deer" },
+					{ value: "dog", label: "Dog" },
+					{ value: "frog", label: "Frog" },
+					{ value: "horse", label: "Horse" },
+					{ value: "ship", label: "Ship" },
+					{ value: "truck", label: "Truck" }
+				]}
+				placeholder="Select Annotation"
+				style={{
+					width: "200px"
+				}}
+			/>
 		</Paper>
 	);
 }
