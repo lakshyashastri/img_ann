@@ -4,6 +4,7 @@ const multer = require("multer");
 const { Pool } = require("pg");
 const path = require("path");
 const app = express();
+const cors = require("cors");
 const PORT = process.env.PORT || 8000;
 
 // PostgreSQL connection
@@ -12,18 +13,19 @@ const pool = new Pool({
 	ssl: false
 });
 
-// Setup multer for file handling to save files to a directory
+// multer for file handling to save files to a directory
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
 		cb(null, "uploads/");
 	},
 	filename: function (req, file, cb) {
-		cb(null, Date.now() + "-" + file.originalname); // Prefixing the filename with a timestamp to avoid name conflicts
+		cb(null, Date.now() + "-" + file.originalname); // adding timestamp to filename to avoid name conflicts
 	}
 });
 const upload = multer({ storage: storage });
 
 app.use(express.json());
+app.use(cors());
 
 const validAnnotations = [
 	"airplane",
