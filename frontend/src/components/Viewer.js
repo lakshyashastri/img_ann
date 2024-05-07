@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, Image, Select, NativeSelect, Text, Paper } from "@mantine/core";
+import { Image, Select, Text, Paper } from "@mantine/core";
 import "../styles/cardcss.css";
 
 function ImageAnnotationViewer({ file, annotation, onAnnotationChange }) {
@@ -23,7 +23,7 @@ function ImageAnnotationViewer({ file, annotation, onAnnotationChange }) {
 	const handleAnnotationChange = value => {
 		if (value) {
 			setCardGradient(
-				"linear-gradient(0deg, var(--mantine-color-green-6), var(--mantine-color-blue-6))"
+				"linear-gradient(0deg, var(--mantine-color-green-6), var(--mantine-color-green-6))"
 			);
 		} else {
 			setCardGradient(
@@ -77,8 +77,8 @@ function ImageAnnotationViewer({ file, annotation, onAnnotationChange }) {
 				onChange={handleAnnotationChange}
 				data={[
 					{ value: "airplane", label: "Airplane" },
-					{ value: "car", label: "Car" },
 					{ value: "bird", label: "Bird" },
+					{ value: "car", label: "Car" },
 					{ value: "cat", label: "Cat" },
 					{ value: "deer", label: "Deer" },
 					{ value: "dog", label: "Dog" },
@@ -89,7 +89,11 @@ function ImageAnnotationViewer({ file, annotation, onAnnotationChange }) {
 				]}
 				placeholder="Select Annotation"
 				style={{
-					width: "200px"
+					width: "500px",
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+					justifyContent: "center"
 				}}
 			/>
 		</Paper>

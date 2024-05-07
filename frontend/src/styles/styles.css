@@ -1,18 +1,15 @@
+body {
+	font-family: "Roboto", sans-serif;
+	background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+	color: #333;
+}
+
 .app {
-	font-family: Arial, sans-serif;
-	max-width: 650px;
-	margin: auto;
+	max-width: 750px;
+	margin: 20px auto;
 	text-align: center;
-}
-
-input[type="file"] {
-	margin: 10px 0;
-}
-
-select {
-	margin: 10px 10px 10px 0;
-}
-
-button {
-	cursor: pointer;
+	padding: 20px;
+	background-color: #fff;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

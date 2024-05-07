@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import ImageUploadDropzone from "./ImageUploadDropzone";
 import ImageAnnotationViewer from "./Viewer";
-import { Button, Select } from "@mantine/core";
+import { Button } from "@mantine/core";
 
 function ImageUpload() {
 	const [files, setFiles] = useState([]); // Stores array of {file, annotation}
@@ -63,8 +63,6 @@ function ImageUpload() {
 					}
 				/>
 			))}
-
-			{files.length > 0 && <hr />}
 
 			<ImageUploadDropzone onDrop={handleDrop} disabled={uploading} />
 			<Button
