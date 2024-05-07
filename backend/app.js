@@ -41,7 +41,7 @@ const validAnnotations = [
 ];
 
 // image upload
-app.post("/upload", upload.array("images", 10), async (req, res) => {
+app.post("/upload", upload.array("images", 100), async (req, res) => {
 	if (!req.files || req.files.length === 0) {
 		return res.status(400).send({ message: "No images uploaded!" });
 	}

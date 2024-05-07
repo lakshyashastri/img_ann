@@ -52,7 +52,6 @@ function ImageUpload() {
 
 	return (
 		<form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
-			<ImageUploadDropzone onDrop={handleDrop} disabled={uploading} />
 			{files.map((item, index) => (
 				<ImageAnnotationViewer
 					key={index}
@@ -63,6 +62,10 @@ function ImageUpload() {
 					}
 				/>
 			))}
+
+			{files.length > 0 && <hr />}
+
+			<ImageUploadDropzone onDrop={handleDrop} disabled={uploading} />
 			<button type="submit" disabled={uploading || files.length === 0}>
 				{uploading ? "Uploading..." : "Upload Images"}
 			</button>
