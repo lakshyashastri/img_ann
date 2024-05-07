@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Button } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import ImageUploadDropzone from "./ImageUploadDropzone";
 import ImageAnnotationViewer from "./Viewer";
-import { Button } from "@mantine/core";
+import "@mantine/notifications/styles.css";
 
 function ImageUpload() {
-	const [files, setFiles] = useState([]); // Stores array of {file, annotation}
+	const [files, setFiles] = useState([]);
 	const [uploading, setUploading] = useState(false);
 
 	const handleDrop = acceptedFiles => {
@@ -23,14 +25,19 @@ function ImageUpload() {
 	const handleSubmit = async event => {
 		event.preventDefault();
 		if (files.some(file => !file.annotation)) {
-			alert("Please select annotations for all images.");
+			notifications.show({
+				title: "Missing Annotations",
+				message: "Please select annotations for all images.",
+				color: "red",
+				autoClose: 5000
+			});
 			return;
 		}
 
 		const formData = new FormData();
-		files.forEach(({ file, annotation }, index) => {
-			formData.append(`images`, file);
-			formData.append(`annotations[]`, annotation);
+		files.forEach(({ file, annotation }) => {
+			formData.append("images", file);
+			formData.append("annotations[]", annotation);
 		});
 
 		try {
@@ -40,12 +47,22 @@ function ImageUpload() {
 				formData,
 				{ headers: { "Content-Type": "multipart/form-data" } }
 			);
-			alert("Images and annotations uploaded successfully!");
+			notifications.show({
+				title: "Success",
+				message: "Images and annotations uploaded successfully!",
+				color: "green",
+				autoClose: 5000
+			});
 			console.log(response.data);
-			setFiles([]); // clear files after upload
+			setFiles([]);
 		} catch (error) {
 			console.error("Error uploading images:", error);
-			alert("Failed to upload images and annotations.");
+			notifications.show({
+				title: "Upload Failed",
+				message: "Failed to upload images and annotations.",
+				color: "red",
+				autoClose: 5000
+			});
 		} finally {
 			setUploading(false);
 		}
