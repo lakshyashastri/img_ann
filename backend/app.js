@@ -41,46 +41,51 @@ const validAnnotations = [
 ];
 
 // image upload
-app.post("/upload", upload.single("image"), async (req, res) => {
-	if (!req.file) {
-		return res.status(400).send({ message: "No image uploaded!" });
+app.post("/upload", upload.array("images", 10), async (req, res) => {
+	if (!req.files || req.files.length === 0) {
+		return res.status(400).send({ message: "No images uploaded!" });
 	}
-	if (
-		!req.body.class_name ||
-		!validAnnotations.includes(req.body.class_name)
-	) {
-		return res
-			.status(400)
-			.send({ message: "Invalid or missing annotation!" });
+	if (!req.body.annotations) {
+		return res.status(400).send({ message: "Annotations are required!" });
 	}
+
+	const annotations = req.body.annotations;
 
 	try {
-		const file_path = req.file.path;
-		const file_name = req.file.originalname;
-		const class_name = req.body.class_name;
-
-		const insertImageText =
-			"INSERT INTO Images(file_path, file_name) VALUES($1, $2) RETURNING image_id;";
-		const insertAnnotationText =
-			"INSERT INTO Annotations(image_id, class_name) VALUES($1, $2);";
-
 		await pool.connect(async (err, client, done) => {
 			if (err) throw err;
 
 			try {
 				await client.query("BEGIN");
-				const imageRes = await client.query(insertImageText, [
-					file_path,
-					file_name
-				]);
-				const image_id = imageRes.rows[0].image_id;
-				await client.query(insertAnnotationText, [
-					image_id,
-					class_name
-				]);
+
+				for (let i = 0; i < req.files.length; i++) {
+					const file = req.files[i];
+					const annotation = annotations[i];
+
+					if (!validAnnotations.includes(annotation)) {
+						throw new Error("Invalid annotation");
+					}
+
+					const insertImageText =
+						"INSERT INTO Images(file_path, file_name) VALUES($1, $2) RETURNING image_id;";
+					const insertAnnotationText =
+						"INSERT INTO Annotations(image_id, class_name) VALUES($1, $2);";
+
+					const imageRes = await client.query(insertImageText, [
+						file.path,
+						file.originalname
+					]);
+					const image_id = imageRes.rows[0].image_id;
+
+					await client.query(insertAnnotationText, [
+						image_id,
+						annotation
+					]);
+				}
+
 				await client.query("COMMIT");
 				res.status(201).send({
-					message: "Image and annotation saved successfully!"
+					message: "Images and annotations saved successfully!"
 				});
 			} catch (err) {
 				await client.query("ROLLBACK");
@@ -90,9 +95,9 @@ app.post("/upload", upload.single("image"), async (req, res) => {
 			}
 		});
 	} catch (err) {
-		console.error("Failed to save image and annotation:", err);
+		console.error("Failed to save images and annotations:", err);
 		res.status(500).send({
-			message: "Failed to save image and annotation"
+			message: "Failed to save images and annotations"
 		});
 	}
 });

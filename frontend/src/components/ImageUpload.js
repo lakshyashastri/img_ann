@@ -4,30 +4,33 @@ import ImageUploadDropzone from "./ImageUploadDropzone";
 import ImageAnnotationViewer from "./Viewer";
 
 function ImageUpload() {
-	const [file, setFile] = useState(null);
-	const [annotation, setAnnotation] = useState("");
+	const [files, setFiles] = useState([]); // Stores array of {file, annotation}
 	const [uploading, setUploading] = useState(false);
 
 	const handleDrop = acceptedFiles => {
-		if (acceptedFiles.length > 0) {
-			setFile(acceptedFiles[0]);
-		}
+		const newFiles = acceptedFiles.map(file => ({ file, annotation: "" }));
+		setFiles(prevFiles => [...prevFiles, ...newFiles]);
 	};
 
-	const handleAnnotationChange = newAnnotation => {
-		setAnnotation(newAnnotation);
+	const handleAnnotationChange = (index, newAnnotation) => {
+		const updatedFiles = files.map((item, idx) =>
+			idx === index ? { ...item, annotation: newAnnotation } : item
+		);
+		setFiles(updatedFiles);
 	};
 
 	const handleSubmit = async event => {
 		event.preventDefault();
-		if (!file || !annotation) {
-			alert("Please select an image and an annotation.");
+		if (files.some(file => !file.annotation)) {
+			alert("Please select annotations for all images.");
 			return;
 		}
 
 		const formData = new FormData();
-		formData.append("image", file);
-		formData.append("class_name", annotation);
+		files.forEach(({ file, annotation }, index) => {
+			formData.append(`images`, file);
+			formData.append(`annotations[]`, annotation);
+		});
 
 		try {
 			setUploading(true);
@@ -36,28 +39,32 @@ function ImageUpload() {
 				formData,
 				{ headers: { "Content-Type": "multipart/form-data" } }
 			);
-			alert("Image and annotation uploaded successfully!");
+			alert("Images and annotations uploaded successfully!");
 			console.log(response.data);
+			setFiles([]); // clear files after upload
 		} catch (error) {
-			console.error("Error uploading image:", error);
-			alert("Failed to upload image and annotation.");
+			console.error("Error uploading images:", error);
+			alert("Failed to upload images and annotations.");
 		} finally {
 			setUploading(false);
 		}
 	};
 
 	return (
-		<form onSubmit={handleSubmit}>
+		<form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
 			<ImageUploadDropzone onDrop={handleDrop} disabled={uploading} />
-			{file && (
+			{files.map((item, index) => (
 				<ImageAnnotationViewer
-					file={file}
-					annotation={annotation}
-					onAnnotationChange={handleAnnotationChange}
+					key={index}
+					file={item.file}
+					annotation={item.annotation}
+					onAnnotationChange={newAnnotation =>
+						handleAnnotationChange(index, newAnnotation)
+					}
 				/>
-			)}
-			<button type="submit" disabled={uploading}>
-				{uploading ? "Uploading..." : "Upload Image"}
+			))}
+			<button type="submit" disabled={uploading || files.length === 0}>
+				{uploading ? "Uploading..." : "Upload Images"}
 			</button>
 		</form>
 	);

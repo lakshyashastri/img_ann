@@ -16,10 +16,14 @@ function ImageUploadDropzone({ onDrop, disabled }) {
 				radius="md"
 				accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
 				maxSize={30 * 1024 ** 2}
+				multiple={true}
 				disabled={disabled}
 			>
 				<div style={{ pointerEvents: "none" }}>
-					<Group position="center">
+					<Group
+						position="center"
+						style={{ justifyContent: "center", width: "100%" }}
+					>
 						<Dropzone.Accept>
 							<IconDownload size={50} color="blue" />
 						</Dropzone.Accept>

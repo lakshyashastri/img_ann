@@ -1,3 +1,4 @@
+/* DropzoneStyles.css */
 .wrapper {
 	position: relative;
 	margin-bottom: 30px;
@@ -6,6 +7,16 @@
 .dropzone {
 	border: 1px dashed #ccc;
 	padding-bottom: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	text-align: center;
+	transition: border-color 0.4s;
+}
+
+.dropzone:hover {
+	border-color: blue;
 }
 
 .icon {
@@ -15,6 +26,5 @@
 .control {
 	position: absolute;
 	width: 250px;
-	/* left: calc(50% - 125px); */
 	bottom: 20px;
 }
