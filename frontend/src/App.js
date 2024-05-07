@@ -1,6 +1,6 @@
 import React from "react";
 import ImageUpload from "./components/ImageUpload";
-import ImageList from "./components/ImageList";
+// import ImageList from "./components/ImageList";
 import "./styles/styles.css";
 
 function App() {

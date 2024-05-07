@@ -37,7 +37,7 @@ const validAnnotations = [
 	"frog",
 	"horse",
 	"ship",
-	"trucks"
+	"truck"
 ];
 
 // image upload

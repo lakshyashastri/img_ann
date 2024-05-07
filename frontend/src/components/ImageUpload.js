@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import axios from "axios";
+import ImageUploadDropzone from "./ImageUploadDropzone";
+import ImageAnnotationViewer from "./Viewer";
 
 function ImageUpload() {
 	const [file, setFile] = useState(null);
 	const [annotation, setAnnotation] = useState("");
 	const [uploading, setUploading] = useState(false);
 
-	const handleFileChange = event => {
-		setFile(event.target.files[0]); // Set the file to the first file if multiple files were selected (for now)
+	const handleDrop = acceptedFiles => {
+		if (acceptedFiles.length > 0) {
+			setFile(acceptedFiles[0]);
+		}
 	};
 
-	const handleAnnotationChange = event => {
-		setAnnotation(event.target.value);
+	const handleAnnotationChange = newAnnotation => {
+		setAnnotation(newAnnotation);
 	};
 
 	const handleSubmit = async event => {
@@ -30,11 +34,7 @@ function ImageUpload() {
 			const response = await axios.post(
 				"http://localhost:8000/upload",
 				formData,
-				{
-					headers: {
-						"Content-Type": "multipart/form-data"
-					}
-				}
+				{ headers: { "Content-Type": "multipart/form-data" } }
 			);
 			alert("Image and annotation uploaded successfully!");
 			console.log(response.data);
@@ -48,32 +48,14 @@ function ImageUpload() {
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<label htmlFor="image-upload">Choose an image:</label>
-			<input
-				id="image-upload"
-				type="file"
-				onChange={handleFileChange}
-				disabled={uploading}
-			/>
-			<label htmlFor="annotation-select">Choose an annotation:</label>
-			<select
-				id="annotation-select"
-				value={annotation}
-				onChange={handleAnnotationChange}
-				disabled={uploading}
-			>
-				<option value="">Select Annotation</option>
-				<option value="airplane">Airplane</option>
-				<option value="car">Car</option>
-				<option value="bird">Bird</option>
-				<option value="cat">Cat</option>
-				<option value="deer">Deer</option>
-				<option value="dog">Dog</option>
-				<option value="frog">Frog</option>
-				<option value="horse">Horse</option>
-				<option value="ship">Ship</option>
-				<option value="trucks">Truck</option>
-			</select>
+			<ImageUploadDropzone onDrop={handleDrop} disabled={uploading} />
+			{file && (
+				<ImageAnnotationViewer
+					file={file}
+					annotation={annotation}
+					onAnnotationChange={handleAnnotationChange}
+				/>
+			)}
 			<button type="submit" disabled={uploading}>
 				{uploading ? "Uploading..." : "Upload Image"}
 			</button>

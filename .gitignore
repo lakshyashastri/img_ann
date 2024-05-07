@@ -3,3 +3,4 @@ img_ann.pdf
 /backend/node_modules/
 /backend/uploads/
 .DS_Store
+todo.md
