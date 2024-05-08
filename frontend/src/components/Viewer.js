@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Image, Select, Text, Paper } from "@mantine/core";
+import { Image, Select, Text, Paper, Button } from "@mantine/core";
 import "../styles/cardcss.css";
+import { IconTrash } from "@tabler/icons-react";
 
-function ImageAnnotationViewer({ file, annotation, onAnnotationChange }) {
+function ImageAnnotationViewer({
+	file,
+	annotation,
+	onAnnotationChange,
+	onRemove
+}) {
 	const [imageUrl, setImageUrl] = useState("");
 	const [cardGradient, setCardGradient] = useState(
 		"linear-gradient(0deg, var(--mantine-color-red-6), var(--mantine-color-orange-6))"
@@ -71,6 +77,14 @@ function ImageAnnotationViewer({ file, annotation, onAnnotationChange }) {
 				>
 					{file.name}
 				</Text>
+				<Button
+					color="red"
+					style={{ marginTop: "10px" }}
+					onClick={onRemove}
+					leftSection={<IconTrash size={20} />}
+				>
+					Remove
+				</Button>
 			</div>
 			<Select
 				value={annotation}

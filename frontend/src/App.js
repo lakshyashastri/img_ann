@@ -8,7 +8,7 @@ import { Notifications } from "@mantine/notifications";
 function App() {
 	return (
 		<MantineProvider withGlobalStyles withNormalizeCSS>
-			<Notifications position="bottom-right" />
+			<Notifications position="top-right" />
 			<div className="app">
 				<h1>Image Annotation Application</h1>
 				<ImageUpload />

@@ -5,6 +5,7 @@ import { notifications } from "@mantine/notifications";
 import ImageUploadDropzone from "./ImageUploadDropzone";
 import ImageAnnotationViewer from "./Viewer";
 import "@mantine/notifications/styles.css";
+import { IconUpload } from "@tabler/icons-react";
 
 function ImageUpload() {
 	const [files, setFiles] = useState([]);
@@ -68,6 +69,10 @@ function ImageUpload() {
 		}
 	};
 
+	const handleRemove = index => {
+		setFiles(files.filter((_, idx) => idx !== index));
+	};
+
 	return (
 		<form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
 			{files.map((item, index) => (
@@ -78,16 +83,20 @@ function ImageUpload() {
 					onAnnotationChange={newAnnotation =>
 						handleAnnotationChange(index, newAnnotation)
 					}
+					onRemove={() => handleRemove(index)}
 				/>
 			))}
 
 			<ImageUploadDropzone onDrop={handleDrop} disabled={uploading} />
+
 			<Button
 				type="submit"
 				disabled={uploading || files.length === 0}
-				variant="filled"
+				variant="gradient"
+				gradient={{ from: "grape", to: "blue", deg: 90 }}
+				leftSection={<IconUpload size={20} />}
 			>
-				{uploading ? "Uploading..." : "Upload Images"}
+				{uploading ? "Uploading..." : "Upload Images and Annotations"}
 			</Button>
 		</form>
 	);
