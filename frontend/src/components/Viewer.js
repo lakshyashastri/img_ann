@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Image, Select, Text, Paper, Button } from "@mantine/core";
 import "../styles/cardcss.css";
 import { IconTrash } from "@tabler/icons-react";
+import { motion } from "framer-motion";
 
 function ImageAnnotationViewer({
 	file,
@@ -42,75 +43,82 @@ function ImageAnnotationViewer({
 	};
 
 	return (
-		<Paper
-			withBorder
-			radius="md"
-			className="card"
-			style={{
-				margin: "20px",
-				display: "flex",
-				flexDirection: "row",
-				alignItems: "center",
-				"--card-gradient": cardGradient
-			}}
+		<motion.div
+			initial={{ opacity: 1, x: 0 }}
+			exit={{ opacity: 0, x: 300 }}
+			transition={{ duration: 0.25 }}
 		>
-			<div
+			<Paper
+				withBorder
+				radius="md"
+				className="card"
 				style={{
+					margin: "20px",
 					display: "flex",
-					flexDirection: "column",
-					marginRight: "20px"
+					flexDirection: "row",
+					alignItems: "center",
+					"--card-gradient": cardGradient
 				}}
 			>
-				<Image
-					src={imageUrl}
-					fit="contain"
-					style={{ width: "300px", height: "auto" }}
-				/>
-				<Text
+				<div
 					style={{
-						backgroundColor: "#f0f0f0",
-						padding: "5px 10px",
-						borderRadius: "5px",
-						marginTop: "10px",
-						display: "inline-block"
+						display: "flex",
+						flexDirection: "column",
+						marginRight: "20px"
 					}}
 				>
-					{file.name}
-				</Text>
-				<Button
-					color="red"
-					style={{ marginTop: "10px" }}
-					onClick={onRemove}
-					leftSection={<IconTrash size={20} />}
-				>
-					Remove
-				</Button>
-			</div>
-			<Select
-				value={annotation}
-				onChange={handleAnnotationChange}
-				data={[
-					{ value: "airplane", label: "Airplane" },
-					{ value: "bird", label: "Bird" },
-					{ value: "car", label: "Car" },
-					{ value: "cat", label: "Cat" },
-					{ value: "deer", label: "Deer" },
-					{ value: "dog", label: "Dog" },
-					{ value: "frog", label: "Frog" },
-					{ value: "horse", label: "Horse" },
-					{ value: "ship", label: "Ship" },
-					{ value: "truck", label: "Truck" }
-				]}
-				placeholder="Select Annotation"
-				style={{
-					width: "500px",
-					display: "flex",
-					flexDirection: "column",
-					alignItems: "center",
-					justifyContent: "center"
-				}}
-			/>
-		</Paper>
+					<Image
+						src={imageUrl}
+						fit="contain"
+						style={{ width: "300px", height: "auto" }}
+						radius="md"
+					/>
+					<Text
+						style={{
+							backgroundColor: "#f0f0f0",
+							padding: "5px 10px",
+							borderRadius: "5px",
+							marginTop: "10px",
+							display: "inline-block"
+						}}
+					>
+						{file.name}
+					</Text>
+					<Button
+						color="red"
+						style={{ marginTop: "10px" }}
+						onClick={onRemove}
+						leftSection={<IconTrash size={20} />}
+					>
+						Remove
+					</Button>
+				</div>
+				<Select
+					value={annotation}
+					onChange={handleAnnotationChange}
+					data={[
+						{ value: "airplane", label: "Airplane" },
+						{ value: "bird", label: "Bird" },
+						{ value: "car", label: "Car" },
+						{ value: "cat", label: "Cat" },
+						{ value: "deer", label: "Deer" },
+						{ value: "dog", label: "Dog" },
+						{ value: "frog", label: "Frog" },
+						{ value: "horse", label: "Horse" },
+						{ value: "ship", label: "Ship" },
+						{ value: "truck", label: "Truck" }
+					]}
+					placeholder="Select Annotation"
+					style={{
+						width: "500px",
+						display: "flex",
+						flexDirection: "column",
+						alignItems: "center",
+						justifyContent: "center"
+					}}
+				/>
+			</Paper>
+		</motion.div>
 	);
 }
 

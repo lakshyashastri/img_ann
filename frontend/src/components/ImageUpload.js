@@ -6,13 +6,18 @@ import ImageUploadDropzone from "./ImageUploadDropzone";
 import ImageAnnotationViewer from "./Viewer";
 import "@mantine/notifications/styles.css";
 import { IconUpload } from "@tabler/icons-react";
+import { AnimatePresence } from "framer-motion";
 
 function ImageUpload() {
 	const [files, setFiles] = useState([]);
 	const [uploading, setUploading] = useState(false);
 
 	const handleDrop = acceptedFiles => {
-		const newFiles = acceptedFiles.map(file => ({ file, annotation: "" }));
+		const newFiles = acceptedFiles.map(file => ({
+			file,
+			annotation: "",
+			id: file.name + Date.now()
+		}));
 		setFiles(prevFiles => [...prevFiles, ...newFiles]);
 	};
 
@@ -75,17 +80,19 @@ function ImageUpload() {
 
 	return (
 		<form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
-			{files.map((item, index) => (
-				<ImageAnnotationViewer
-					key={index}
-					file={item.file}
-					annotation={item.annotation}
-					onAnnotationChange={newAnnotation =>
-						handleAnnotationChange(index, newAnnotation)
-					}
-					onRemove={() => handleRemove(index)}
-				/>
-			))}
+			<AnimatePresence>
+				{files.map((item, index) => (
+					<ImageAnnotationViewer
+						key={item.id}
+						file={item.file}
+						annotation={item.annotation}
+						onAnnotationChange={newAnnotation =>
+							handleAnnotationChange(index, newAnnotation)
+						}
+						onRemove={() => handleRemove(index)}
+					/>
+				))}
+			</AnimatePresence>
 
 			<ImageUploadDropzone onDrop={handleDrop} disabled={uploading} />
 

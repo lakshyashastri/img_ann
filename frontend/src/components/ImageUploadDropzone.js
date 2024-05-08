@@ -14,7 +14,7 @@ function ImageUploadDropzone({ onDrop, disabled }) {
 				onDrop={onDrop}
 				className="dropzone"
 				radius="md"
-				accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
+				accept={[MIME_TYPES.png, MIME_TYPES.jpeg, MIME_TYPES.webp]}
 				maxSize={30 * 1024 ** 2}
 				multiple={true}
 				disabled={disabled}
