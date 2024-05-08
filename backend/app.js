@@ -60,7 +60,8 @@ app.post("/upload", upload.array("images", 100), async (req, res) => {
 
 				for (let i = 0; i < req.files.length; i++) {
 					const file = req.files[i];
-					const annotation = annotations[i];
+					const _annotation = annotations[i];
+					const annotation = _annotation.toLowerCase();
 
 					if (!validAnnotations.includes(annotation)) {
 						throw new Error("Invalid annotation");

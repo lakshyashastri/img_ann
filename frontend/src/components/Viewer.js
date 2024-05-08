@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Image, Select, Text, Paper, Button } from "@mantine/core";
+import { Image, Autocomplete, Text, Paper, Button } from "@mantine/core";
 import "../styles/cardcss.css";
 import { IconTrash } from "@tabler/icons-react";
 import { motion } from "framer-motion";
@@ -107,7 +107,7 @@ function ImageAnnotationViewer({
 						Remove
 					</Button>
 				</div>
-				<Select
+				<Autocomplete
 					value={annotation}
 					onChange={handleAnnotationChange}
 					data={options}
@@ -119,6 +119,10 @@ function ImageAnnotationViewer({
 						alignItems: "center",
 						justifyContent: "center"
 					}}
+					comboboxProps={{
+						transitionProps: { transition: "pop", duration: 300 }
+					}}
+					// variant="filled"
 				/>
 			</Paper>
 		</motion.div>
