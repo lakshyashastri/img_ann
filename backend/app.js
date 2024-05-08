@@ -131,6 +131,38 @@ app.get("/image/:image_id", async (req, res) => {
 	}
 });
 
+// searching images by annotation
+app.get("/search", async (req, res) => {
+	const { annotation } = req.query;
+
+	// validate search input
+	if (!annotation) {
+		return res.status(400).send({
+			message: "Annotation query parameter is required for search."
+		});
+	}
+
+	const searchQuery = `
+        SELECT Images.image_id, Images.file_path, Images.file_name
+        FROM Images
+        JOIN Annotations ON Images.image_id = Annotations.image_id
+        WHERE Annotations.class_name ILIKE $1;
+    `;
+
+	try {
+		const { rows } = await pool.query(searchQuery, [`%${annotation}%`]); // partial matching allowed
+		if (rows.length === 0) {
+			return res.status(404).send({
+				message: "No images found with the given annotation."
+			});
+		}
+		res.status(200).json(rows);
+	} catch (err) {
+		console.error("Search failed:", err);
+		res.status(500).send({ message: "Error occurred during the search." });
+	}
+});
+
 // Start the server
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
