@@ -21,7 +21,8 @@ function ImageSearch() {
 			notifications.show({
 				title: "Search Error",
 				message: "Please enter an annotation to search.",
-				color: "red"
+				color: "yellow",
+				autoClose: 5000
 			});
 			return;
 		}
@@ -35,16 +36,27 @@ function ImageSearch() {
 				notifications.show({
 					title: "No Results",
 					message: "No images found for this annotation.",
-					color: "blue"
+					color: "blue",
+					autoClose: 5000
 				});
 			}
 		} catch (error) {
 			console.error("Search failed:", error);
-			notifications.show({
-				title: "Search Failed",
-				message: "Failed to retrieve images.",
-				color: "red"
-			});
+			if (error.response && error.response.status === 404) {
+				notifications.show({
+					title: "No Images Found",
+					message: "No images found for the specified annotation.",
+					color: "blue",
+					autoClose: 5000
+				});
+			} else {
+				notifications.show({
+					title: "Search Failed",
+					message: "Failed to retrieve images due to an error.",
+					color: "red",
+					autoClose: 5000
+				});
+			}
 		} finally {
 			setLoading(false);
 			setAnnotation("");

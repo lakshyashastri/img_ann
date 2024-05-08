@@ -34,7 +34,7 @@ function ImageUpload() {
 			notifications.show({
 				title: "Missing Annotations",
 				message: "Please select annotations for all images.",
-				color: "red",
+				color: "yellow",
 				autoClose: 5000
 			});
 			return;
