@@ -6,15 +6,18 @@ import {
 	Image,
 	Group,
 	Container,
-	Text
+	Text,
+	Title
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconSearch } from "@tabler/icons-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 function ImageSearch() {
 	const [annotation, setAnnotation] = useState("");
 	const [images, setImages] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const [lastSearch, setLastSearch] = useState("");
 
 	const searchImages = async () => {
 		if (!annotation) {
@@ -32,6 +35,7 @@ function ImageSearch() {
 				params: { annotation }
 			});
 			setImages(response.data);
+			setLastSearch(annotation);
 			if (response.data.length === 0) {
 				notifications.show({
 					title: "No Results",
@@ -49,6 +53,7 @@ function ImageSearch() {
 					color: "blue",
 					autoClose: 5000
 				});
+				setImages([]);
 			} else {
 				notifications.show({
 					title: "Search Failed",
@@ -86,6 +91,9 @@ function ImageSearch() {
 						searchImages();
 					}
 				}}
+				comboboxProps={{
+					transitionProps: { transition: "pop", duration: 300 }
+				}}
 			/>
 			<Button
 				onClick={searchImages}
@@ -97,31 +105,51 @@ function ImageSearch() {
 			>
 				Search
 			</Button>
-			<Group position="center" spacing="lg" style={{ marginTop: 20 }}>
-				{images.map(image => (
-					<div key={image.image_id} style={{ textAlign: "center" }}>
-						<Image
-							src={`http://localhost:8000/image/${image.image_id}`}
-							alt={image.file_name}
-							height={200}
-							width={300}
-							fit="cover"
-							radius="md"
-						/>
-						<Text
-							style={{
-								backgroundColor: "#f0f0f0",
-								padding: "5px 10px",
-								borderRadius: "5px",
-								marginTop: "10px",
-								display: "inline-block"
-							}}
+
+			{images.length > 0 && (
+				<Title
+					order={2}
+					align="center"
+					style={{ marginTop: 20, color: "gray" }}
+				>
+					Search results for "{lastSearch}"
+				</Title>
+			)}
+
+			<AnimatePresence>
+				<Group position="center" spacing="lg" style={{ marginTop: 20 }}>
+					{images.map(image => (
+						<motion.div
+							key={image.image_id}
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: -20 }}
+							transition={{ duration: 0.3 }}
+							style={{ textAlign: "center" }}
 						>
-							{image.file_name}
-						</Text>
-					</div>
-				))}
-			</Group>
+							<Image
+								src={`http://localhost:8000/image/${image.image_id}`}
+								alt={image.file_name}
+								height={200}
+								width={300}
+								fit="cover"
+								radius="md"
+							/>
+							<Text
+								style={{
+									backgroundColor: "#f0f0f0",
+									padding: "5px 10px",
+									borderRadius: "5px",
+									marginTop: "10px",
+									display: "inline-block"
+								}}
+							>
+								{image.file_name}
+							</Text>
+						</motion.div>
+					))}
+				</Group>
+			</AnimatePresence>
 		</Container>
 	);
 }
