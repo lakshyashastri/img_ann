@@ -15,6 +15,19 @@ function ImageAnnotationViewer({
 		"linear-gradient(0deg, var(--mantine-color-red-6), var(--mantine-color-orange-6))"
 	);
 
+	const options = [
+		{ value: "airplane", label: "Airplane" },
+		{ value: "bird", label: "Bird" },
+		{ value: "car", label: "Car" },
+		{ value: "cat", label: "Cat" },
+		{ value: "deer", label: "Deer" },
+		{ value: "dog", label: "Dog" },
+		{ value: "frog", label: "Frog" },
+		{ value: "horse", label: "Horse" },
+		{ value: "ship", label: "Ship" },
+		{ value: "truck", label: "Truck" }
+	];
+
 	useEffect(() => {
 		if (file) {
 			const url = URL.createObjectURL(file);
@@ -97,18 +110,7 @@ function ImageAnnotationViewer({
 				<Select
 					value={annotation}
 					onChange={handleAnnotationChange}
-					data={[
-						{ value: "airplane", label: "Airplane" },
-						{ value: "bird", label: "Bird" },
-						{ value: "car", label: "Car" },
-						{ value: "cat", label: "Cat" },
-						{ value: "deer", label: "Deer" },
-						{ value: "dog", label: "Dog" },
-						{ value: "frog", label: "Frog" },
-						{ value: "horse", label: "Horse" },
-						{ value: "ship", label: "Ship" },
-						{ value: "truck", label: "Truck" }
-					]}
+					data={options}
 					placeholder="Select Annotation"
 					style={{
 						width: "500px",
