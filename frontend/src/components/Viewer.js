@@ -46,7 +46,8 @@ function ImageAnnotationViewer({
 		<motion.div
 			initial={{ opacity: 1, x: 0 }}
 			exit={{ opacity: 0, x: 300 }}
-			transition={{ duration: 0.25 }}
+			transition={{ duration: 0.25, ease: "easeInOut" }}
+			layout
 		>
 			<Paper
 				withBorder

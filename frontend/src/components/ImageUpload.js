@@ -6,7 +6,7 @@ import ImageUploadDropzone from "./ImageUploadDropzone";
 import ImageAnnotationViewer from "./Viewer";
 import "@mantine/notifications/styles.css";
 import { IconUpload } from "@tabler/icons-react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 function ImageUpload() {
 	const [files, setFiles] = useState([]);
@@ -92,19 +92,27 @@ function ImageUpload() {
 						onRemove={() => handleRemove(index)}
 					/>
 				))}
+				<motion.div
+					layout
+					transition={{ duration: 0.25, ease: "easeInOut" }}
+				>
+					<ImageUploadDropzone
+						onDrop={handleDrop}
+						disabled={uploading}
+					/>
+					<Button
+						type="submit"
+						disabled={uploading || files.length === 0}
+						variant="gradient"
+						gradient={{ from: "grape", to: "blue", deg: 90 }}
+						leftSection={<IconUpload size={20} />}
+					>
+						{uploading
+							? "Uploading..."
+							: "Upload Images and Annotations"}
+					</Button>
+				</motion.div>
 			</AnimatePresence>
-
-			<ImageUploadDropzone onDrop={handleDrop} disabled={uploading} />
-
-			<Button
-				type="submit"
-				disabled={uploading || files.length === 0}
-				variant="gradient"
-				gradient={{ from: "grape", to: "blue", deg: 90 }}
-				leftSection={<IconUpload size={20} />}
-			>
-				{uploading ? "Uploading..." : "Upload Images and Annotations"}
-			</Button>
 		</form>
 	);
 }
