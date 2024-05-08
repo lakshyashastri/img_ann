@@ -10,10 +10,10 @@ import {
 	Title
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { IconSearch } from "@tabler/icons-react";
+import { IconSearch, IconX } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-function ImageSearch() {
+function ImageSearch({ onFocusChange }) {
 	const [annotation, setAnnotation] = useState("");
 	const [images, setImages] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -46,26 +46,21 @@ function ImageSearch() {
 			}
 		} catch (error) {
 			console.error("Search failed:", error);
-			if (error.response && error.response.status === 404) {
-				notifications.show({
-					title: "No Images Found",
-					message: "No images found for the specified annotation.",
-					color: "blue",
-					autoClose: 5000
-				});
-				setImages([]);
-			} else {
-				notifications.show({
-					title: "Search Failed",
-					message: "Failed to retrieve images due to an error.",
-					color: "red",
-					autoClose: 5000
-				});
-			}
+			notifications.show({
+				title: "Search Failed",
+				message: "Failed to retrieve images due to an error.",
+				color: "red",
+				autoClose: 5000
+			});
 		} finally {
 			setLoading(false);
 			setAnnotation("");
 		}
+	};
+
+	const clearImages = () => {
+		setLastSearch("");
+		setImages([]);
 	};
 
 	return (
@@ -91,20 +86,49 @@ function ImageSearch() {
 						searchImages();
 					}
 				}}
-				comboboxProps={{
-					transitionProps: { transition: "pop", duration: 300 }
-				}}
 			/>
-			<Button
-				onClick={searchImages}
-				leftSection={<IconSearch size={14} />}
-				loading={loading}
-				style={{ marginTop: "10px" }}
-				variant="gradient"
-				gradient={{ from: "grape", to: "blue", deg: 90 }}
+			<Group
+				position="center"
+				style={{
+					display: "flex",
+					flexGrow: 1,
+					justifyContent: "center",
+					marginTop: 20
+				}}
 			>
-				Search
-			</Button>
+				<AnimatePresence>
+					<Button
+						onClick={searchImages}
+						leftSection={<IconSearch size={14} />}
+						loading={loading}
+						variant="gradient"
+						gradient={{ from: "grape", to: "blue", deg: 90 }}
+					>
+						Search
+					</Button>
+					{images.length > 0 && (
+						<motion.div
+							initial={{ opacity: 0, scale: 0.8 }}
+							animate={{ opacity: 1, scale: 1 }}
+							exit={{ opacity: 0, scale: 0.8 }}
+							transition={{
+								type: "spring",
+								stiffness: 260,
+								damping: 20
+							}}
+						>
+							<Button
+								onClick={clearImages}
+								leftSection={<IconX size={14} />}
+								variant="subtle"
+								color="red"
+							>
+								Clear
+							</Button>
+						</motion.div>
+					)}
+				</AnimatePresence>
+			</Group>
 
 			{images.length > 0 && (
 				<Title
@@ -116,15 +140,14 @@ function ImageSearch() {
 				</Title>
 			)}
 
-			<AnimatePresence>
-				<Group position="center" spacing="lg" style={{ marginTop: 20 }}>
+			<Group justify="center" spacing="lg" style={{ marginTop: 20 }}>
+				<AnimatePresence>
 					{images.map(image => (
 						<motion.div
 							key={image.image_id}
 							initial={{ opacity: 0, y: 20 }}
 							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -20 }}
-							transition={{ duration: 0.3 }}
+							exit={{ opacity: 0, y: 20 }}
 							style={{ textAlign: "center" }}
 						>
 							<Image
@@ -148,8 +171,8 @@ function ImageSearch() {
 							</Text>
 						</motion.div>
 					))}
-				</Group>
-			</AnimatePresence>
+				</AnimatePresence>
+			</Group>
 		</Container>
 	);
 }

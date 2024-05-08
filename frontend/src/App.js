@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { MantineProvider, Tabs } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import ImageUpload from "./components/ImageUpload";
@@ -7,6 +7,8 @@ import "./styles/styles.css";
 import { IconPhoto, IconFileSearch } from "@tabler/icons-react";
 
 function App() {
+	const [isSearchFocused, setIsSearchFocused] = useState(false);
+
 	return (
 		<MantineProvider withGlobalStyles withNormalizeCSS>
 			<Notifications position="top-right" />
@@ -17,6 +19,7 @@ function App() {
 						<Tabs.Tab
 							value="upload"
 							leftSection={<IconPhoto size={20} />}
+							disabled={isSearchFocused}
 						>
 							Image annotate
 						</Tabs.Tab>
@@ -33,7 +36,7 @@ function App() {
 					</Tabs.Panel>
 
 					<Tabs.Panel value="search" pt="xs">
-						<SearchComponent />
+						<SearchComponent onFocusChange={setIsSearchFocused} />
 					</Tabs.Panel>
 				</Tabs>
 			</div>
