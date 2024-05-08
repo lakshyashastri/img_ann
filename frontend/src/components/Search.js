@@ -7,7 +7,7 @@ import {
 	Group,
 	Container,
 	Text,
-	Title
+	Divider
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconSearch, IconX } from "@tabler/icons-react";
@@ -70,21 +70,24 @@ function ImageSearch({ onFocusChange }) {
 				value={annotation}
 				onChange={setAnnotation}
 				data={[
-					"airplane",
-					"car",
-					"bird",
-					"cat",
-					"deer",
-					"dog",
-					"frog",
-					"horse",
-					"ship",
-					"truck"
+					"Airplane",
+					"Bird",
+					"Car",
+					"Cat",
+					"Deer",
+					"Dog",
+					"Frog",
+					"Horse",
+					"Ship",
+					"Truck"
 				]}
 				onKeyPress={event => {
 					if (event.key === "Enter") {
 						searchImages();
 					}
+				}}
+				comboboxProps={{
+					transitionProps: { transition: "pop", duration: 300 }
 				}}
 			/>
 			<Group
@@ -131,13 +134,7 @@ function ImageSearch({ onFocusChange }) {
 			</Group>
 
 			{images.length > 0 && (
-				<Title
-					order={2}
-					align="center"
-					style={{ marginTop: 20, color: "gray" }}
-				>
-					Search results for "{lastSearch}"
-				</Title>
+				<Divider label={lastSearch} labelPosition="center" my="md" />
 			)}
 
 			<Group justify="center" spacing="lg" style={{ marginTop: 20 }}>
