@@ -6,6 +6,7 @@ const path = require("path");
 const app = express();
 const cors = require("cors");
 const PORT = process.env.PORT || 8000;
+const fs = require("fs").promises;
 
 // PostgreSQL connection
 const pool = new Pool({
@@ -160,6 +161,116 @@ app.get("/search", async (req, res) => {
 	} catch (err) {
 		console.error("Search failed:", err);
 		res.status(500).send({ message: "Error occurred during the search." });
+	}
+});
+
+// Update image annotation
+app.put("/update/:image_id", async (req, res) => {
+	const { image_id } = req.params;
+	const { annotation } = req.body;
+
+	if (!annotation) {
+		return res.status(400).send({ message: "Annotation is required." });
+	}
+
+	const newAnnotation = annotation.toLowerCase();
+
+	if (!validAnnotations.includes(newAnnotation)) {
+		return res
+			.status(400)
+			.send({ message: "Invalid annotation provided." });
+	}
+
+	try {
+		await pool.connect(async (err, client, done) => {
+			if (err) throw err;
+
+			try {
+				await client.query("BEGIN");
+
+				// Check if the image exists
+				const checkImageQuery =
+					"SELECT * FROM Images WHERE image_id = $1;";
+				const checkImageResult = await client.query(checkImageQuery, [
+					image_id
+				]);
+
+				if (checkImageResult.rows.length === 0) {
+					throw new Error("Image not found.");
+				}
+
+				// Update the annotation
+				const updateAnnotationQuery = `
+                    UPDATE Annotations 
+                    SET class_name = $1 
+                    WHERE image_id = $2;
+                `;
+				await client.query(updateAnnotationQuery, [
+					newAnnotation,
+					image_id
+				]);
+
+				await client.query("COMMIT");
+				res.status(200).send({
+					message: "Annotation updated successfully."
+				});
+			} catch (err) {
+				await client.query("ROLLBACK");
+				throw err;
+			} finally {
+				done();
+			}
+		});
+	} catch (err) {
+		console.error("Failed to update annotation:", err);
+		res.status(500).send({ message: "Failed to update annotation" });
+	}
+});
+
+// Delete image
+app.delete("/delete/:image_id", async (req, res) => {
+	const { image_id } = req.params;
+
+	try {
+		await pool.connect(async (err, client, done) => {
+			if (err) throw err;
+
+			try {
+				await client.query("BEGIN");
+
+				// Retrieve file path from database before deletion
+				const getPathQuery = `SELECT file_path FROM Images WHERE image_id = $1;`;
+				const pathResult = await client.query(getPathQuery, [image_id]);
+				if (pathResult.rows.length === 0) {
+					throw new Error("Image not found.");
+				}
+				const filePath = pathResult.rows[0].file_path;
+
+				const deleteAnnotationsQuery = `DELETE FROM Annotations WHERE image_id = $1;`;
+				await client.query(deleteAnnotationsQuery, [image_id]);
+
+				const deleteImageQuery = `DELETE FROM Images WHERE image_id = $1;`;
+				await client.query(deleteImageQuery, [image_id]);
+				await client.query("COMMIT");
+
+				// Delete file
+				await fs.unlink(filePath);
+
+				res.status(200).send({
+					message: "Image and annotations deleted successfully."
+				});
+			} catch (err) {
+				await client.query("ROLLBACK");
+				throw err;
+			} finally {
+				done();
+			}
+		});
+	} catch (err) {
+		console.error("Failed to delete image and annotations:", err);
+		res.status(500).send({
+			message: "Failed to delete image and annotations"
+		});
 	}
 });
 

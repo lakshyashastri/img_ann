@@ -10,7 +10,6 @@ import {
 	Divider,
 	Menu,
 	Modal,
-	TextInput,
 	Stack
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
@@ -86,6 +85,66 @@ function ImageSearch({ onFocusChange }) {
 	const clearImages = () => {
 		setLastSearch("");
 		setImages([]);
+	};
+
+	const updateAnnotation = async () => {
+		if (!modalAnnotation) {
+			notifications.show({
+				title: "Update Error",
+				message: "The annotation cannot be empty.",
+				color: "red",
+				autoClose: 5000
+			});
+			return;
+		}
+
+		try {
+			await axios.put(`http://localhost:8000/update/${currentImageId}`, {
+				annotation: modalAnnotation
+			});
+			notifications.show({
+				title: "Success",
+				message: "Annotation updated successfully.",
+				color: "green",
+				autoClose: 5000
+			});
+			setIsEditModalOpen(false);
+			clearImages();
+			setModalAnnotation("");
+		} catch (error) {
+			console.error("Update failed:", error);
+			notifications.show({
+				title: "Update Failed",
+				message: "Failed to update the annotation.",
+				color: "red",
+				autoClose: 5000
+			});
+		}
+	};
+
+	const confirmDeletion = async () => {
+		try {
+			await axios.delete(
+				`http://localhost:8000/delete/${currentImageId}`
+			);
+			notifications.show({
+				title: "Success",
+				message: "Image deleted successfully.",
+				color: "green",
+				autoClose: 5000
+			});
+			setIsDeleteModalOpen(false);
+			clearImages();
+			setModalAnnotation("");
+		} catch (error) {
+			console.error("Deletion failed:", error);
+			notifications.show({
+				title: "Deletion Failed",
+				message: "Failed to delete the image.",
+				color: "red",
+				autoClose: 5000
+			});
+		}
 	};
 
 	const options = [
@@ -293,7 +352,7 @@ function ImageSearch({ onFocusChange }) {
 								}}
 							/>
 							<Button
-								// onClick={updateAnnotation}
+								onClick={updateAnnotation}
 								variant="gradient"
 								gradient={{
 									from: "grape",
@@ -323,7 +382,7 @@ function ImageSearch({ onFocusChange }) {
 								Are you sure you want to delete this annotation?
 							</Text>
 							<Button
-								// onClick={confirmDeletion}
+								onClick={confirmDeletion}
 								variant="gradient"
 								gradient={{
 									from: "red",
