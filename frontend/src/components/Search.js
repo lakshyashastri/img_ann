@@ -27,6 +27,7 @@ function ImageSearch({ onFocusChange }) {
 				color: "yellow",
 				autoClose: 5000
 			});
+			setImages([]);
 			return;
 		}
 		setLoading(true);
@@ -46,12 +47,21 @@ function ImageSearch({ onFocusChange }) {
 			}
 		} catch (error) {
 			console.error("Search failed:", error);
-			notifications.show({
-				title: "Search Failed",
-				message: "Failed to retrieve images due to an error.",
-				color: "red",
-				autoClose: 5000
-			});
+			if (error.response && error.response.status === 404) {
+				notifications.show({
+					title: "No Images Found",
+					message: "No images found for the specified annotation.",
+					color: "blue"
+				});
+			} else {
+				notifications.show({
+					title: "Search Failed",
+					message: "Failed to retrieve images due to an error.",
+					color: "red",
+					autoClose: 5000
+				});
+			}
+			setImages([]);
 		} finally {
 			setLoading(false);
 			setAnnotation("");
@@ -146,6 +156,7 @@ function ImageSearch({ onFocusChange }) {
 							animate={{ opacity: 1, y: 0 }}
 							exit={{ opacity: 0, y: 20 }}
 							style={{ textAlign: "center" }}
+							layout
 						>
 							<Image
 								src={`http://localhost:8000/image/${image.image_id}`}
