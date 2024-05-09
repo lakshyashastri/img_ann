@@ -7,10 +7,20 @@ import {
 	Group,
 	Container,
 	Text,
-	Divider
+	Divider,
+	Menu,
+	Modal,
+	TextInput,
+	Stack
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { IconSearch, IconX, IconEdit } from "@tabler/icons-react";
+import {
+	IconSearch,
+	IconX,
+	IconEdit,
+	IconSettings,
+	IconTrash
+} from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 function ImageSearch({ onFocusChange }) {
@@ -19,6 +29,10 @@ function ImageSearch({ onFocusChange }) {
 	const [loading, setLoading] = useState(false);
 	const [lastSearch, setLastSearch] = useState("");
 	const [hoveredImageId, setHoveredImageId] = useState(null);
+	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [currentImageId, setCurrentImageId] = useState(null);
+	const [modalAnnotation, setModalAnnotation] = useState("");
 
 	const searchImages = async () => {
 		if (!annotation) {
@@ -74,24 +88,26 @@ function ImageSearch({ onFocusChange }) {
 		setImages([]);
 	};
 
+	const options = [
+		"Airplane",
+		"Bird",
+		"Car",
+		"Cat",
+		"Deer",
+		"Dog",
+		"Frog",
+		"Horse",
+		"Ship",
+		"Truck"
+	];
+
 	return (
 		<Container>
 			<Autocomplete
 				placeholder="Type to search..."
 				value={annotation}
 				onChange={setAnnotation}
-				data={[
-					"Airplane",
-					"Bird",
-					"Car",
-					"Cat",
-					"Deer",
-					"Dog",
-					"Frog",
-					"Horse",
-					"Ship",
-					"Truck"
-				]}
+				data={options}
 				onKeyPress={event => {
 					if (event.key === "Enter") {
 						searchImages();
@@ -190,18 +206,48 @@ function ImageSearch({ onFocusChange }) {
 									}}
 								/>
 								{hoveredImageId === image.image_id && (
-									<Button
-										style={{
-											position: "absolute",
-											top: 10,
-											right: 10
-										}}
-										variant="filled"
-										radius="xl"
-										size="xs"
-									>
-										<IconEdit />
-									</Button>
+									<Menu shadow="md" width={200}>
+										<Menu.Target>
+											<Button
+												style={{
+													position: "absolute",
+													top: 10,
+													right: 10
+												}}
+												variant="filled"
+												radius="xl"
+												size="xs"
+											>
+												<IconSettings />
+											</Button>
+										</Menu.Target>
+
+										<Menu.Dropdown>
+											<Menu.Item
+												leftSection={<IconEdit />}
+												onClick={() => {
+													setCurrentImageId(
+														image.image_id
+													);
+													setIsEditModalOpen(true);
+												}}
+											>
+												Edit
+											</Menu.Item>
+											<Menu.Item
+												leftSection={<IconTrash />}
+												color="red"
+												onClick={() => {
+													setCurrentImageId(
+														image.image_id
+													);
+													setIsDeleteModalOpen(true);
+												}}
+											>
+												Delete
+											</Menu.Item>
+										</Menu.Dropdown>
+									</Menu>
 								)}
 							</div>
 							<Text
@@ -217,6 +263,78 @@ function ImageSearch({ onFocusChange }) {
 							</Text>
 						</motion.div>
 					))}
+					<Modal
+						opened={isEditModalOpen}
+						onClose={() => setIsEditModalOpen(false)}
+						title="Edit Annotation"
+						overlayProps={{
+							backgroundOpacity: 0.55,
+							blur: 3
+						}}
+						transitionProps={{ transition: "skew-up" }}
+						centered
+					>
+						<Stack align="center" justify="center" spacing="sm">
+							<Autocomplete
+								placeholder="Type to search..."
+								value={modalAnnotation}
+								onChange={setModalAnnotation}
+								data={options}
+								onKeyPress={event => {
+									if (event.key === "Enter") {
+										searchImages();
+									}
+								}}
+								comboboxProps={{
+									transitionProps: {
+										transition: "pop",
+										duration: 300
+									}
+								}}
+							/>
+							<Button
+								// onClick={updateAnnotation}
+								variant="gradient"
+								gradient={{
+									from: "grape",
+									to: "blue",
+									deg: 90
+								}}
+							>
+								Update
+							</Button>
+						</Stack>
+					</Modal>
+
+					<Modal
+						opened={isDeleteModalOpen}
+						onClose={() => setIsDeleteModalOpen(false)}
+						title="Confirm Deletion"
+						size="auto"
+						overlayProps={{
+							backgroundOpacity: 0.55,
+							blur: 3
+						}}
+						transitionProps={{ transition: "skew-down" }}
+						centered
+					>
+						<Stack align="center" justify="center" spacing="sm">
+							<Text>
+								Are you sure you want to delete this annotation?
+							</Text>
+							<Button
+								// onClick={confirmDeletion}
+								variant="gradient"
+								gradient={{
+									from: "red",
+									to: "orange",
+									deg: 90
+								}}
+							>
+								Delete
+							</Button>
+						</Stack>
+					</Modal>
 				</AnimatePresence>
 			</Group>
 		</Container>
