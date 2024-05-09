@@ -1,12 +1,14 @@
 # Overview
 
-This application is a full-stack web application for uploading, annotating, searching, and managing images. It includes a React frontend and an Express.js backend with a PostgreSQL database.
+[Jump to Installation](#installation)
+
+This application is a full-stack web application for uploading, annotating, searching, and managing images. It includes a React frontend and an Express.js backend with a PostgreSQL database. The app features a modern, seamless, and intuitive user experience with smooth transitions throughout, making interactions feel fluid and natural.
 
 #### Frontend Components
 
 1. **App.js**: Root component integrating the `ImageUpload` and `SearchComponent` within a tabbed interface using Mantine UI components.
 2. **ImageUploadDropzone.js**: Provides a dropzone for image files; supported formats are PNG, JPEG, and WEBP.
-3. **Search.js**: Facilitates image search based on annotations. Supports pagination and modal dialogs for editing and deleting annotations.
+3. **Search.js**: Facilitates image search based on annotations. Supports pagination (5 images per page) and modal dialogs for editing and deleting annotations.
 4. **Viewer.js**: Displays individual images as cards with options to annotate or remove them.
 5. **ImageUpload.js**: Manages the state of all the image cards, including annotations, and handles the submission process.
 
@@ -36,6 +38,7 @@ This application is a full-stack web application for uploading, annotating, sear
 -   **Express.js**: Handles server-side logic.
 -   **Multer**: Manages file uploads to the server.
 -   **PostgreSQL**: Stores and manages image and annotation data.
+-   **Framer Motion**: Utilized for adding smooth and natural animations throughout the application to make transitions and interactions more fluid.
 
 # Installation
 
@@ -124,9 +127,27 @@ This application is a full-stack web application for uploading, annotating, sear
 
 #### Additional Notes
 
--   Ensure your firewall or network settings allow traffic on the ports your services are running on (default 8000 for backend).
+-   Ensure your firewall or network settings allow traffic on the ports the services are running on (default 8000 for backend).
 
 # Running the Application
 
 1. Start the backend server (`node app.js`).
 2. Launch the frontend application (`npm start` in the React project directory).
+
+# Screenshots
+
+### Annotate images
+
+![Annotate images](/screenshots/annotate.png)
+
+### Search
+
+![Search](/screenshots/search.png)
+
+### Modify image on hover
+
+![Modify image](/screenshots/edit.png)
+
+### Delete image
+
+![Delete image](/screenshots/delete.png)
