@@ -58,10 +58,11 @@ This application is a full-stack web application for uploading, annotating, sear
     ```
 
 2. **Install dependencies**:
-   Navigate to the backend directory and install the required npm packages:
+   Navigate to the backend directory and install the required npm packages. Also create an "uploads" folder to store images.
 
     ```bash
     cd backend
+    mkdir uploads
     npm install
     ```
 
@@ -70,7 +71,7 @@ This application is a full-stack web application for uploading, annotating, sear
 
     ```plaintext
     PORT=8000
-    DATABASE_URL=postgresql://username:password@localhost:5432/databasename
+    DATABASE_URL=postgres://username:password@localhost:5432/databasename
     ```
 
 4. **Database Setup**:

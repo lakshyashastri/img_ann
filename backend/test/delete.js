@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const URL = "http://localhost:8000/delete/16"; // Adjust the image_id as necessary
+const URL = "http://localhost:8000/delete/16";
 
 async function testDeleteImage() {
 	try {
