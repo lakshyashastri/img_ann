@@ -184,6 +184,14 @@ function ImageSearch({ onFocusChange }) {
 				comboboxProps={{
 					transitionProps: { transition: "pop", duration: 300 }
 				}}
+				onFocus={() => {
+					onFocusChange(true);
+				}}
+				onBlur={() => {
+					setTimeout(() => {
+						onFocusChange(false);
+					}, 100);
+				}}
 			/>
 			<Group
 				position="center"
