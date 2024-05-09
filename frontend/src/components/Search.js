@@ -10,7 +10,13 @@ import {
 	Divider
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { IconSearch, IconX } from "@tabler/icons-react";
+import {
+	IconSearch,
+	IconX,
+	IconEdit,
+	IconTrash,
+	IconPencil
+} from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 function ImageSearch({ onFocusChange }) {
@@ -18,6 +24,7 @@ function ImageSearch({ onFocusChange }) {
 	const [images, setImages] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [lastSearch, setLastSearch] = useState("");
+	const [hoveredImageId, setHoveredImageId] = useState(null);
 
 	const searchImages = async () => {
 		if (!annotation) {
@@ -158,14 +165,38 @@ function ImageSearch({ onFocusChange }) {
 							style={{ textAlign: "center" }}
 							layout
 						>
-							<Image
-								src={`http://localhost:8000/image/${image.image_id}`}
-								alt={image.file_name}
-								height={200}
-								width={300}
-								fit="cover"
-								radius="md"
-							/>
+							<div
+								style={{
+									position: "relative"
+								}}
+								onMouseEnter={() =>
+									setHoveredImageId(image.image_id)
+								}
+								onMouseLeave={() => setHoveredImageId(null)}
+							>
+								<Image
+									src={`http://localhost:8000/image/${image.image_id}`}
+									alt={image.file_name}
+									height={200}
+									width={300}
+									fit="cover"
+									radius="md"
+								/>
+								{hoveredImageId === image.image_id && (
+									<Button
+										style={{
+											position: "absolute",
+											top: 10,
+											right: 10
+										}}
+										variant="filled"
+										radius="xl"
+										size="xs"
+									>
+										<IconEdit />
+									</Button>
+								)}
+							</div>
 							<Text
 								style={{
 									backgroundColor: "#f0f0f0",
