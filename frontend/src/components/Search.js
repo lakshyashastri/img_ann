@@ -10,13 +10,7 @@ import {
 	Divider
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import {
-	IconSearch,
-	IconX,
-	IconEdit,
-	IconTrash,
-	IconPencil
-} from "@tabler/icons-react";
+import { IconSearch, IconX, IconEdit } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 function ImageSearch({ onFocusChange }) {
@@ -162,12 +156,21 @@ function ImageSearch({ onFocusChange }) {
 							initial={{ opacity: 0, y: 20 }}
 							animate={{ opacity: 1, y: 0 }}
 							exit={{ opacity: 0, y: 20 }}
-							style={{ textAlign: "center" }}
+							style={{
+								textAlign: "center",
+								display: "flex",
+								flexDirection: "column",
+								alignItems: "center",
+								width: "100%",
+								maxWidth: "300px"
+							}}
 							layout
 						>
 							<div
 								style={{
-									position: "relative"
+									position: "relative",
+									width: "100%",
+									maxWidth: "300px"
 								}}
 								onMouseEnter={() =>
 									setHoveredImageId(image.image_id)
@@ -181,6 +184,10 @@ function ImageSearch({ onFocusChange }) {
 									width={300}
 									fit="cover"
 									radius="md"
+									style={{
+										width: "100%",
+										height: "auto"
+									}}
 								/>
 								{hoveredImageId === image.image_id && (
 									<Button
