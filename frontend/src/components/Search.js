@@ -10,7 +10,8 @@ import {
 	Divider,
 	Menu,
 	Modal,
-	Stack
+	Stack,
+	Pagination
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import {
@@ -32,8 +33,16 @@ function ImageSearch({ onFocusChange }) {
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [currentImageId, setCurrentImageId] = useState(null);
 	const [modalAnnotation, setModalAnnotation] = useState("");
+	const [currentPage, setCurrentPage] = useState(1);
+
+	const itemsPerPage = 5;
+	const paginatedImages = images.slice(
+		(currentPage - 1) * itemsPerPage,
+		currentPage * itemsPerPage
+	);
 
 	const searchImages = async () => {
+		setCurrentPage(1);
 		if (!annotation) {
 			notifications.show({
 				title: "Search Error",
@@ -218,16 +227,14 @@ function ImageSearch({ onFocusChange }) {
 					)}
 				</AnimatePresence>
 			</Group>
-
 			{images.length > 0 && (
 				<Divider label={lastSearch} labelPosition="center" my="md" />
 			)}
-
 			<Group justify="center" spacing="lg" style={{ marginTop: 20 }}>
 				<AnimatePresence>
-					{images.map(image => (
+					{paginatedImages.map(image => (
 						<motion.div
-							key={image.image_id}
+							key={`${currentPage}-${image.file_name}`}
 							initial={{ opacity: 0, y: 20 }}
 							animate={{ opacity: 1, y: 0 }}
 							exit={{ opacity: 0, y: 20 }}
@@ -322,6 +329,7 @@ function ImageSearch({ onFocusChange }) {
 							</Text>
 						</motion.div>
 					))}
+
 					<Modal
 						opened={isEditModalOpen}
 						onClose={() => setIsEditModalOpen(false)}
@@ -396,6 +404,31 @@ function ImageSearch({ onFocusChange }) {
 					</Modal>
 				</AnimatePresence>
 			</Group>
+
+			{images.length > 0 && (
+				<Divider label={lastSearch} labelPosition="center" my="md" />
+			)}
+
+			{images.length > 0 &&
+				Math.ceil(images.length / itemsPerPage) > 1 && (
+					<Group
+						position="center"
+						style={{ width: "100%", justifyContent: "center" }}
+					>
+						<Pagination
+							page={currentPage}
+							onChange={page => {
+								setCurrentPage(page);
+							}}
+							total={Math.ceil(images.length / itemsPerPage)}
+							color="blue"
+							radius="xl"
+							size="md"
+							boundaries={1}
+							siblings={1}
+						/>
+					</Group>
+				)}
 		</Container>
 	);
 }
