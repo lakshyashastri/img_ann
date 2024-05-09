@@ -348,6 +348,7 @@ function ImageSearch({ onFocusChange }) {
 						}}
 						transitionProps={{ transition: "skew-up" }}
 						centered
+						radius="lg"
 					>
 						<Stack align="center" justify="center" spacing="sm">
 							<Autocomplete
@@ -392,6 +393,7 @@ function ImageSearch({ onFocusChange }) {
 						}}
 						transitionProps={{ transition: "skew-down" }}
 						centered
+						radius="lg"
 					>
 						<Stack align="center" justify="center" spacing="sm">
 							<Text>
